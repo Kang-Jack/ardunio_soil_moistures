@@ -1,6 +1,7 @@
 #include <DS3231.h>
 #include <LiquidCrystal_I2C.h>
-
+#include <AM2320.h>
+AM2320 th;
 
 #define Moisture A0 //定义AO 引脚 为 IO-A0  
 #define Moisture1 A1 //定义A1 引脚 为 IO-A1  
@@ -46,7 +47,54 @@ void loop() {
   displayTime();     
   delay(DisDelay);
   displaySoilMoisture();  
+  humidityAndTemperature();
 }  
+void humidityAndTemperature() {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    char line0[32];
+    char line1[32];
+    int  temperature;
+    switch (th.Read()) {
+        case 2:
+            temperature = Clock.getTemperature();
+            sprintf(line0, "CRC failed");
+            sprintf(line1, "t=%2d", (int)temperature);
+
+            lcd.setCursor(0, 0);
+            lcd.print(line0);
+            lcd.setCursor(0, 1);
+            lcd.print(line1);
+            lcd.write(0xdf);  // 显示温度单位
+            lcd.print("C");
+            break;
+        case 1:
+            temperature = Clock.getTemperature();
+            sprintf(line0, "Sensor offline");
+            sprintf(line1, "t=%2d", (int)temperature);
+
+            lcd.setCursor(0, 0);
+            lcd.print(line0);
+            lcd.setCursor(0, 1);
+            lcd.print(line1);
+            lcd.write(0xdf);  // 显示温度单位
+            lcd.print("C");
+            break;
+        case 0:
+            sprintf(line0, "t=%2d", (int)th.t);
+            sprintf(line1, "h=%2d", (int)th.h);
+
+            lcd.setCursor(0, 0);
+            lcd.print(line0);
+            lcd.setCursor(0, 1);
+            lcd.print(line1);
+            lcd.write(0xdf);  // 显示温度单位
+            lcd.print("C");
+            break;
+    }
+    delay(DisDelay);
+}
+
 void displaySoilMoisture(){
   lcd.clear();
   lcd.setCursor(0, 0);
