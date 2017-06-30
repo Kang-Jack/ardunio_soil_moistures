@@ -8,7 +8,7 @@
 #define DO 7        //定义DO 引脚 为 IO-7  
 #define D1 6        //定义DO 引脚 为 IO-6  
 #define D2 5        //定义DO 引脚 为 IO-5  
-
+#define DisDelay 2000        //displayTime
 DS3231 Clock;
 bool Century=false;
 bool h12=false;
@@ -44,7 +44,7 @@ void loop() {
   setTime();
   delay(500);
   displayTime();     
-  delay(1000);  
+  delay(DisDelay);
   displaySoilMoisture();  
 }  
 void displaySoilMoisture(){
@@ -55,7 +55,7 @@ void displaySoilMoisture(){
   lcd.setCursor(0, 1); 
   lcd.print("|DO1 = ");  
   lcd.print(digitalRead(DO),DEC);//读取DO的数值 
-  delay(1000);
+  delay(DisDelay);
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Moisture2 = ");
@@ -63,7 +63,7 @@ void displaySoilMoisture(){
   lcd.setCursor(0, 1);
   lcd.print("|DO2 = ");
   lcd.print(digitalRead(D1), DEC);//读取D1的数值 
-  delay(1000);
+  delay(DisDelay);
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Moisture3 = ");
@@ -71,7 +71,7 @@ void displaySoilMoisture(){
   lcd.setCursor(0, 1);
   lcd.print("|DO3 = ");
   lcd.print(digitalRead(D2), DEC);//读取D2的数值 
-  delay(1000);
+  delay(DisDelay);
 }
 void setTime(){
    if (Serial.available() >=14)     //串口读取数据
