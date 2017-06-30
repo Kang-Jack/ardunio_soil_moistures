@@ -9,7 +9,7 @@ AM2320 th;
 #define DO 7        //定义DO 引脚 为 IO-7  
 #define D1 6        //定义DO 引脚 为 IO-6  
 #define D2 5        //定义DO 引脚 为 IO-5  
-#define DisDelay 2000        //displayTime
+#define DisDelay 5000        //displayTime
 DS3231 Clock;
 bool Century=false;
 bool h12=false;
@@ -59,7 +59,7 @@ void humidityAndTemperature() {
         case 2:
             temperature = Clock.getTemperature();
             sprintf(line0, "CRC failed");
-            sprintf(line1, "t=%2d", (int)temperature);
+            sprintf(line1, "Temp.=%2d", (int)temperature);
 
             lcd.setCursor(0, 0);
             lcd.print(line0);
@@ -71,7 +71,7 @@ void humidityAndTemperature() {
         case 1:
             temperature = Clock.getTemperature();
             sprintf(line0, "Sensor offline");
-            sprintf(line1, "t=%2d", (int)temperature);
+            sprintf(line1, " Temp.=%2d", (int)temperature);
 
             lcd.setCursor(0, 0);
             lcd.print(line0);
@@ -81,8 +81,8 @@ void humidityAndTemperature() {
             lcd.print("C");
             break;
         case 0:
-            sprintf(line0, "t=%2d", (int)th.t);
-            sprintf(line1, "h=%2d", (int)th.h);
+            sprintf(line0, "H.=%2d", (int)th.h);
+            sprintf(line1, "Temp.=%2d", (int)th.t);
 
             lcd.setCursor(0, 0);
             lcd.print(line0);
@@ -90,6 +90,7 @@ void humidityAndTemperature() {
             lcd.print(line1);
             lcd.write(0xdf);  // 显示温度单位
             lcd.print("C");
+
             break;
     }
     delay(DisDelay);
