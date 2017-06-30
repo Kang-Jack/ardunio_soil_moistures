@@ -59,7 +59,7 @@ void humidityAndTemperature() {
         case 2:
             temperature = Clock.getTemperature();
             sprintf(line0, "CRC failed");
-            sprintf(line1, "Temp.=%2d", (int)temperature);
+            sprintf(line1, "Temp. = %2d", (int)temperature);
 
             lcd.setCursor(0, 0);
             lcd.print(line0);
@@ -71,7 +71,7 @@ void humidityAndTemperature() {
         case 1:
             temperature = Clock.getTemperature();
             sprintf(line0, "Sensor offline");
-            sprintf(line1, " Temp.=%2d", (int)temperature);
+            sprintf(line1, "Temp. = %2d", (int)temperature);
 
             lcd.setCursor(0, 0);
             lcd.print(line0);
@@ -81,8 +81,8 @@ void humidityAndTemperature() {
             lcd.print("C");
             break;
         case 0:
-            sprintf(line0, "H.=%2d", (int)th.h);
-            sprintf(line1, "Temp.=%2d", (int)th.t);
+            sprintf(line0, "Humidity = %2d", (int)th.h);
+            sprintf(line1, "Temp. = %2d", (int)th.t);
 
             lcd.setCursor(0, 0);
             lcd.print(line0);
