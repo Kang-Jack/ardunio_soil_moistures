@@ -1,6 +1,8 @@
+#include <avr/sleep.h>
 #include <DS3231.h>
 #include <LiquidCrystal_I2C.h>
 #include <AM2320.h>
+
 AM2320 th;
 
 #define Moisture A0 //定义AO 引脚 为 IO-A0  
@@ -23,8 +25,6 @@ uint8_t bell[8] = {0x4,0xe,0xe,0xe,0x1f,0x0,0x4};
 
 LiquidCrystal_I2C lcd(0x3F,16,2);
 
-
-  
 void setup() {  
   // Start the I2C interface
   pinMode(Moisture, INPUT);//定义A0为输入模式  
@@ -49,9 +49,8 @@ void loop() {
   displaySoilMoisture();  
   humidityAndTemperature();
 }  
+
 void humidityAndTemperature() {
-    lcd.clear();
-    lcd.setCursor(0, 0);
     char line0[32];
     char line1[32];
     int  temperature;
@@ -60,40 +59,31 @@ void humidityAndTemperature() {
             temperature = Clock.getTemperature();
             sprintf(line0, "CRC failed");
             sprintf(line1, "Temp. = %2d", (int)temperature);
-
-            lcd.setCursor(0, 0);
-            lcd.print(line0);
-            lcd.setCursor(0, 1);
-            lcd.print(line1);
-            lcd.write(0xdf);  // 显示温度单位
-            lcd.print("C");
+            lcdTemprature(line0,line1);
             break;
         case 1:
             temperature = Clock.getTemperature();
             sprintf(line0, "Sensor offline");
             sprintf(line1, "Temp. = %2d", (int)temperature);
-
-            lcd.setCursor(0, 0);
-            lcd.print(line0);
-            lcd.setCursor(0, 1);
-            lcd.print(line1);
-            lcd.write(0xdf);  // 显示温度单位
-            lcd.print("C");
+            lcdTemprature(line0,line1);
             break;
         case 0:
             sprintf(line0, "Humidity = %2d", (int)th.h);
             sprintf(line1, "Temp. = %2d", (int)th.t);
-
-            lcd.setCursor(0, 0);
-            lcd.print(line0);
-            lcd.setCursor(0, 1);
-            lcd.print(line1);
-            lcd.write(0xdf);  // 显示温度单位
-            lcd.print("C");
-
+            lcdTemprature(line0,line1);
             break;
     }
     delay(DisDelay);
+}
+void lcdTemprature(char line0, char line1)
+{
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(line0);
+  lcd.setCursor(0, 1);
+  lcd.print(line1);
+  lcd.write(0xdf);  // 显示温度单位
+  lcd.print("C");
 }
 
 void displaySoilMoisture(){
@@ -122,6 +112,7 @@ void displaySoilMoisture(){
   lcd.print(digitalRead(D2), DEC);//读取D2的数值 
   delay(DisDelay);
 }
+
 void setTime(){
    if (Serial.available() >=14)     //串口读取数据
    {
