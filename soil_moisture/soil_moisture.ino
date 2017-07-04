@@ -1,3 +1,6 @@
+#include <avr/sleep.h>
+#include <avr/wdt.h>
+
 #include <Enerlib.h>
 #include <DS3231.h>
 #include <LiquidCrystal_I2C.h>
@@ -16,6 +19,9 @@ DS3231 Clock;
 AM2320 th;
 Energy energy;
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
+
+volatile byte data=0;
+
 
 volatile byte state = 0
 
@@ -43,18 +49,73 @@ void setup() {
   lcd.backlight(); 
   Serial.println("Please enter the time: year[2]month[2]date[2]DoW[2]hour[2]minute[2]second[2]");
   Serial.println("example: 2014-12-3 Wednesday 14:15:15 enter:14120303141515"); 
-     
+
+
+  setup_watchdog(9);
+  // 0=16ms, 1=32ms,2=64ms,3=128ms,4=250ms,5=500ms
+  // 6=1 sec,7=2 sec, 8=4 sec, 9= 8sec
+  ACSR |=_BV(ACD);//OFF ACD
+  ADCSRA=0;//OFF ADC
+  Sleep_avr();//Sleep_Mode
+
 }  
   
-void loop() {  
-  setTime();
-  delay(500);
-  displayTime();     
-  delay(DisDelay);
-  displaySoilMoisture();  
-  humidityAndTemperature();
+void loop() {
+
+  if(data>=7){
+    data=0;
+  //-------------------------------//此处是到达设置唤醒时间允许的程序
+    setTime();
+    delay(500);
+    displayTime();     
+    delay(DisDelay);
+    displaySoilMoisture();  
+    humidityAndTemperature();
+  //--------------------------------    
+    Sleep_avr();
+  }
+  else {
+    Sleep_avr();  //Continue Sleep
+  }
+
+
 }  
 
+//Sleep mode is activated
+void setup_watchdog(int ii) {
+
+  byte bb;
+
+  if (ii > 9 ) ii=9;
+  bb=ii & 7;
+  if (ii > 7) bb|= (1<<5);
+  bb|= (1<<WDCE);
+
+  MCUSR &= ~(1<<WDRF);
+  // start timed sequence
+  WDTCSR |= (1<<WDCE) | (1<<WDE);
+  // set new watchdog timeout value
+  WDTCSR = bb;
+  WDTCSR |= _BV(WDIE);
+
+
+}
+//WDT interrupt
+ISR(WDT_vect) {
+
+  ++data;
+// wdt_reset();
+
+}
+
+void Sleep_avr(){
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN); // sleep mode is set here
+  sleep_enable();
+  sleep_mode();                        // System sleeps here
+}
+
+
+//Energy
 void wakeISR() {
     if (energy.WasSleeping()) {
         state = 1;

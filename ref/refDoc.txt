@@ -5,3 +5,27 @@ http://www.arduino.cn/thread-2890-1-1.html
 http://donalmorrissey.blogspot.co.id/2010/04/sleeping-arduino-part-5-wake-up-via.html
 
 http://www.geek-workshop.com/thread-8715-1-1.html
+
+
+扩展阅读
+
+冷知识_让arduino用2颗5号电池运行1年以上
+http://www.geek-workshop.com/thread-12261-1-1.html
+認識與實驗Arduino的睡眠模式
+http://swf.com.tw/?p=525
+Arduino Sleep_Watchdog_Battery
+http://interface.khm.de/index.php/lab/interfaces-advanced/sleep_watchdog_battery/
+优化红外灯的电量消耗
+http://blog.sina.com.cn/s/blog_6a2f665f0102v84n.html
+Sleep
+http://playground.arduino.cc/Learning/ArduinoSleepCode
+ATmega ( PDF size:12.5M)
+http://www.atmel.com/Images/doc8161.pdf
+From Arduino to a Microcontroller on a Breadboard
+http://arduino.cc/en/Tutorial/ArduinoToBreadboard
+Burn a bootloader to a blank atmega328atmega328p with an Arduino UNO
+http://3g1l.com/blog-burn-bootloader-blank-atmega328atmega328p-arduino-uno
+Author LT
+Posted on 2015/01/01
+Categories 电子电气
+Tags Arduino, Watchdog
