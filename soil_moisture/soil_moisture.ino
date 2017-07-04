@@ -6,7 +6,6 @@
 #include <LiquidCrystal_I2C.h>
 #include <AM2320.h>
 
-
 #define Moisture A0 //定义AO 引脚 为 IO-A0  
 #define Moisture1 A1 //定义A1 引脚 为 IO-A1  
 #define Moisture2 A2 //定义A2 引脚 为 IO-A2  
@@ -20,10 +19,9 @@ AM2320 th;
 Energy energy;
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
-volatile byte data=0;
+volatile byte dataT=0;
 
-
-volatile byte state = 0
+volatile byte state = 0;
 
 bool Century=false;
 bool h12=false;
@@ -62,8 +60,8 @@ void setup() {
   
 void loop() {
 
-  if(data>=7){
-    data=0;
+  if(dataT>=7){
+    dataT=0;
   //-------------------------------//此处是到达设置唤醒时间允许的程序
     setTime();
     delay(500);
@@ -103,7 +101,7 @@ void setup_watchdog(int ii) {
 //WDT interrupt
 ISR(WDT_vect) {
 
-  ++data;
+  ++dataT;
 // wdt_reset();
 
 }
