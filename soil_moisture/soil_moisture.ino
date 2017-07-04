@@ -1,9 +1,8 @@
-#include <avr/sleep.h>
+#include <Enerlib.h>
 #include <DS3231.h>
 #include <LiquidCrystal_I2C.h>
 #include <AM2320.h>
 
-AM2320 th;
 
 #define Moisture A0 //定义AO 引脚 为 IO-A0  
 #define Moisture1 A1 //定义A1 引脚 为 IO-A1  
@@ -12,7 +11,14 @@ AM2320 th;
 #define D1 6        //定义DO 引脚 为 IO-6  
 #define D2 5        //定义DO 引脚 为 IO-5  
 #define DisDelay 5000        //displayTime
+
 DS3231 Clock;
+AM2320 th;
+Energy energy;
+LiquidCrystal_I2C lcd(0x3F, 16, 2);
+
+volatile byte state = 0
+
 bool Century=false;
 bool h12=false;
 bool PM;
@@ -23,7 +29,6 @@ char data[15];
 char Str_year[3], Str_month[3], Str_date[3], Str_DoW[3], Str_hour[3], Str_minute[3], Str_second[3];
 uint8_t bell[8] = {0x4,0xe,0xe,0xe,0x1f,0x0,0x4};
 
-LiquidCrystal_I2C lcd(0x3F,16,2);
 
 void setup() {  
   // Start the I2C interface
@@ -50,6 +55,25 @@ void loop() {
   humidityAndTemperature();
 }  
 
+void wakeISR() {
+    if (energy.WasSleeping()) {
+        state = 1;
+    }
+    else {
+        state = 2;
+    }
+}
+
+void checkState() {
+    if (state == 1) {
+        Serial.println("Was sleeping...");
+    }
+    else if (state == 2) {
+        Serial.println("Was awake...");
+    }
+    state = 0;
+}
+
 void humidityAndTemperature() {
     char line0[32];
     char line1[32];
@@ -75,7 +99,7 @@ void humidityAndTemperature() {
     }
     delay(DisDelay);
 }
-void lcdTemprature(char line0, char line1)
+void lcdTemprature(char* line0, char* line1)
 {
   lcd.clear();
   lcd.setCursor(0, 0);
