@@ -61,20 +61,20 @@ void loop() {
         delay(500);
         int hour = Clock.getHour(h12, PM);
         if (hour > 1 & hour < 6){
+            lcd.noBacklight();
             Serial.println("Was sleeping...");
             Sleep_avr();
         }
         else{
-            if (hour > 18)
-                lcd.noBacklight();//Backlight
-            else
-                lcd.backlight();
+            lcd.backlight();
             displayTime();
             delay(DisDelay);
             displaySoilMoisture();
             humidityAndTemperature();
+            delay(DisDelay);
             //--------------------------------    
             Serial.println("Was sleeping...");
+            lcd.noBacklight();
             Sleep_avr();
         }
     }
